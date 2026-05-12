@@ -1,7 +1,7 @@
 class BettingStrategy {
     constructor(config) {
         this.initialBet = config.initialBet;
-        this.currentBet = this.initialBet;
+        this.betPercentage = config.betPercentage; // 10% logic
         this.maxBet = config.maxBet;
         this.minBet = config.minBet;
         this.targetMultiplier = config.targetMultiplier;
@@ -9,39 +9,21 @@ class BettingStrategy {
         this.takeProfit = config.takeProfit;
         this.martingaleMultiplier = config.martingaleMultiplier || 2;
         this.consecutiveLosses = 0;
-        this.consecutiveWins = 0;
-        this.averageMultiplierThreshold = config.averageMultiplierThreshold;
+        this.currentBetAmount = this.initialBet;
     }
 
-    calculateNextBet(lastResult = null) {
-        if (!lastResult) {
-            return this.initialBet; // First bet
-        }
-
-        if (lastResult.won) {
-            this.consecutiveWins++;
+    calculateNextBet(currentBalance, wonLastRound = true) {
+        if (wonLastRound) {
             this.consecutiveLosses = 0;
-            this.currentBet = this.initialBet; // Reset to initial bet after win
+            // Exponential: 10% of balance, but at least 10 shillings
+            this.currentBetAmount = Math.max(this.minBet, currentBalance * this.betPercentage);
         } else {
             this.consecutiveLosses++;
-            this.consecutiveWins = 0;
-            // Martingale: double bet after loss, but respect maxBet
-            this.currentBet = Math.min(this.currentBet * this.martingaleMultiplier, this.maxBet);
+            // Martingale recovery
+            this.currentBetAmount = this.currentBetAmount * this.martingaleMultiplier;
         }
 
-        return Math.max(this.minBet, Math.min(this.currentBet, this.maxBet));
-    }
-
-    shouldStopTrading(stats) {
-        return (
-            stats.totalLoss <= -this.stopLoss ||
-            stats.totalProfit >= this.takeProfit ||
-            this.consecutiveLosses >= 5
-        );
-    }
-
-    shouldBet(currentMultiplier) {
-        return currentMultiplier === null || currentMultiplier === 0;
+        return Math.min(this.currentBetAmount, this.maxBet);
     }
 }
 

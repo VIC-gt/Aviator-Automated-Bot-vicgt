@@ -1,19 +1,23 @@
 const config = {
+    CREDENTIALS: {
+        PHONE: '0712345678', // Replace with your Betika Number
+        PASSWORD: 'YourPasswordHere' // Replace with your Betika Password
+    },
     NAVIGATION: {
-        BASE_URL: 'https://spribe.co/welcome',
+        BASE_URL: 'https://www.betika.com/en-ke/login',
+        GAME_URL: 'https://www.betika.com/en-ke/aviator',
         TIMEOUT: 60000,
-        RUN_DURATION: 24 * 60 * 60 * 1000 // 24 hours
+        RUN_DURATION: 24 * 60 * 60 * 1000 
     },
     GAME: {
         POLLING_INTERVAL: 4000,
-        MULTIPLIER_THRESHOLD: 1.50,
-        HISTORY_SIZE: 3  // Number of previous games to consider for average multiplier
+        HISTORY_SIZE: 3 
     },
     SELECTORS: {
-        INITIAL: {
-            ACCORDION: '.accordion-body.shadow',
-            DEMO_BUTTON: '.btn.btn-primary.btn-lg.px-5.btn-demo.btn-danger',
-            AGE_BUTTON: '.btn.btn-md.btn-primary.btn-age'
+        LOGIN: {
+            PHONE_INPUT: 'input[type="text"]',
+            PASS_INPUT: 'input[type="password"]',
+            SUBMIT_BUTTON: '.button.login__button'
         },
         GAME: {
             BUBBLE_MULTIPLIER: '.payouts-wrapper .bubble-multiplier',
@@ -24,42 +28,17 @@ const config = {
             CASHOUT_MULTIPLIER: '.amount span:first-child'
         }
     },
-    DATABASE: {
-        host: 'localhost',
-        user: 'root',
-        password: '',
-        database: 'aviatorBot'
-    },
     BETTING_STRATEGIES: {
-        CONSERVATIVE: {
-            initialBet: 1.00,
-            maxBet: 50.00,
-            minBet: 1.00,
-            targetMultiplier: 1.20,
-            stopLoss: 20.00,
-            takeProfit: 40.00,
-            martingaleMultiplier: 1.5,
-            averageMultiplierThreshold: 1.50
-        },
-        MODERATE: {
-            initialBet: 2.00,
-            maxBet: 100.00,
-            minBet: 1.00,
+        EXPONENTIAL_GROWTH: {
+            initialBet: 10.00, // Starting amount
+            minBet: 10.00,    // Hard minimum of 10 shillings
+            betPercentage: 0.10, // 10% of balance for growth
+            maxBet: 5000.00,
             targetMultiplier: 1.50,
-            stopLoss: 50.00,
-            takeProfit: 100.00,
-            martingaleMultiplier: 2,
+            stopLoss: 50.00,   // Protects your 100 shilling start
+            takeProfit: 10000.00,
+            martingaleMultiplier: 2.0,
             averageMultiplierThreshold: 2.00
-        },
-        AGGRESSIVE: {
-            initialBet: 5.00,
-            maxBet: 200.00,
-            minBet: 1.00,
-            targetMultiplier: 2.00,
-            stopLoss: 100.00,
-            takeProfit: 300.00,
-            martingaleMultiplier: 2.5,
-            averageMultiplierThreshold: 3.00
         }
     }
 };
